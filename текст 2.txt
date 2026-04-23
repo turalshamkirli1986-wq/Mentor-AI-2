@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <title>Mentor AI</title>
+  <style>
+    body { font-family: Arial; background: linear-gradient(135deg,#6a11cb,#2575fc); color:#fff; text-align:center; }
+    .card { background:rgba(255,255,255,0.1); border-radius:12px; padding:20px; margin:20px auto; width:80%; }
+    input, select, button { padding:10px; margin:10px; border-radius:8px; border:none; }
+    button { background:#ffcc00; color:#000; font-weight:bold; cursor:pointer; }
+    #quote,#advice,#mentorQuotes { margin-top:15px; font-size:18px; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px; white-space:pre-line; }
+  </style>
+</head>
+<body>
+  <h1>✨ Mentor AI ✨</h1>
+  <p>Gündəlik motivasiya, məşhurların kəlamları və AI məsləhətləri</p>
+
+  <!-- Mövzu seçimi -->
+  <div class="card">
+    <h2>📌 Mövzu seç</h2>
+    <select id="topic">
+      <option value="Uğur">🏆 Uğur</option>
+      <option value="Sevgi">❤️ Sevgi</option>
+      <option value="Liderlik">👑 Liderlik</option>
+      <option value="Xoşbəxtlik">😊 Xoşbəxtlik</option>
+      <option value="İlham">💡 İlham</option>
+    </select>
+    <br>
+    <button onclick="getQuote()">Motivasiya al</button>
+    <div id="quote"></div>
+  </div>
+
+  <!-- AI Məsləhətçi -->
+  <div class="card">
+    <h2>🤖 AI Məsləhətçi</h2>
+    <input type="text" id="question" placeholder="Sualını yaz..." style="width:70%;">
+    <br>
+    <button onclick="getAdvice()">Məsləhət al</button>
+    <div id="advice"></div>
+  </div>
+
+  <!-- Məşhurların Kəlamları -->
+  <div class="card">
+    <h2>🌟 Məşhurların Kəlamları</h2>
+    <input type="text" id="mentorName" placeholder="Məşhurun adını yaz (məs: Steve Jobs)">
+    <br>
+    <button onclick="getMentorQuotes()">Kəlamları göstər</button>
+    <div id="mentorQuotes"></div>
+  </div>
+
+  <script>
+    async function getQuote() {
+      const topic = document.getElementById("topic").value;
+      const res = await fetch(`http://localhost:3000/quote/${topic}`);
+      const data = await res.json();
+      document.getElementById("quote").innerText = data.quote;
+    }
+
+    async function getAdvice() {
+      const question = document.getElementById("question").value;
+      const res = await fetch("http://localhost:3000/advice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question })
+      });
+      const data = await res.json();
+      document.getElementById("advice").innerText = data.advice;
+    }
+
+    async function getMentorQuotes() {
+      const name = document.getElementById("mentorName").value;
+      const res = await fetch(`http://localhost:3000/mentor/${name}`);
+      const data = await res.json();
+      document.getElementById("mentorQuotes").innerText = data.quotes.join("\n");
+    }
+  </script>
+</body>
+</html>
